@@ -18,7 +18,7 @@ def get_model_records_with_readmes(product):
     datasets = hf.list_datasets()
     readmes = thread_map(get_readme, model_metadata)
     model_metadata_df = pd.DataFrame.from_records(
-        {**record, "readme": readme}
+        {**record.__dict__, "readme": readme}
         for (record, readme) in zip(model_metadata, readmes)
     )
     model_metadata_df.to_csv(str(product))

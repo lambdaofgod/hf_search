@@ -1,0 +1,3 @@
+pandas
+tqdm
+huggingface-hub==0.2.1
