@@ -1,0 +1,38 @@
+MY PROJECT -*- mode: org -*-
+#+TAGS: notes
+#+TODO: TODO IN-PROGRESS DONE
+#+STARTUP: fold
+#+PROPERTY: header-args:python :session hello
+
+#+BEGIN_SRC python :results value :session hf_search :exports both 
+from hf_search.data import make_hf_dataset
+import sentence_transformers
+import pandas as pd
+
+model = sentence_transformers.SentenceTransformer('sentence-transformers/sentence-t5-base')
+df = pd.read_csv("data/interim/models_with_readmes.csv")
+ds = make_hf_dataset.make_hf_dataset_with_embeddings(model, df, "readme")
+ds.add_faiss_index("readme_embedding")
+#+END_SRC
+
+#+BEGIN_SRC python :results output :session hf_search :exports both
+query = "scientific sentence embeddings"
+indices = ds.search("readme_embedding", model.encode(query)).indices
+for result_id in ds[indices]['modelId']:
+    print(result_id)
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+razent/SciFive-large-Pubmed_PMC-MedNLI
+lighteternal/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext-finetuned-mnli
+cambridgeltl/mirror-bert-base-uncased-sentence-drophead
+osanseviero/full-sentence-distillroberta2
+johngiorgi/declutr-sci-base
+valhalla/t5-base-qg-hl
+Rachneet/t5-base-qg-hl-squadv2
+fse/paragram-25
+SuperAI2-Machima/mt5-small-thai-qg-v2
+cambridgeltl/mirror-bert-base-uncased-sentence
+#+end_example
+
