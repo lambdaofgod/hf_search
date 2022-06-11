@@ -14,7 +14,7 @@ def get_readme(model_record):
     return readme_contents
 
 
-def get_model_records_with_readmes(product):
+def prepare_model_records_with_readmes(product):
     model_metadata = hf.list_models()
     datasets = hf.list_datasets()
     readmes = thread_map(get_readme, model_metadata)

@@ -1,2 +1,13 @@
-- source: src.data.load_hf_data.get_model_records_with_readmes
-  product: "data/interim/models_with_readmes.csv"
+meta:
+  extract_upstream: False
+
+tasks:
+  - source: hf_search.data.load_hf_data.prepare_model_records_with_readmes
+    product: "data/interim/models_with_readmes.csv"
+  - source: hf_search.data.make_hf_dataset.make_hf_models_dataset
+    upstream:
+      prepare_model_records_with_readmes
+    params:
+      sentence_transformer_name: "sentence-transformers/sentence-t5-base"
+      batch_size: 128
+    product: "data/processed/huggingface_models_dataset"

@@ -1,7 +1,7 @@
 import pandas as pd
-import huggingface_hub as hf
-from requests.exceptions import HTTPError
 import datasets
+import torch
+torch.multiprocessing.set_start_method('spawn', force=True)
 import sentence_transformers
 
 
@@ -22,3 +22,11 @@ def make_hf_dataset_with_embeddings(
         batch_size=batch_size,
     )
     return ds_with_embeddings
+
+
+def make_hf_models_dataset(sentence_transformer_name, upstream, product, batch_size):
+    model = sentence_transformers.SentenceTransformer(sentence_transformer_name)
+    df = pd.read_csv(str(upstream["prepare_model_records_with_readmes"]))
+
+    ds = make_hf_dataset_with_embeddings(model, df, "readme", batch_size=batch_size)
+    ds.save_to_disk(str(product))
